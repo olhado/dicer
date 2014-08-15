@@ -1,12 +1,12 @@
-defmodule Dice do
+defmodule DiceRoll do
   defmodule Scalar_Term, do: defstruct operand: nil, value: 0
   defmodule Die_Term, do: defstruct operand: nil, quantity: 0, sides: 10
   defmodule Complex_Term, do: defstruct operand: nil, terms: []
 
-  def parse(dice_str) when is_binary(dice_str) do
+  def parse(dice_str) when is_binary(dice_str) and dice_str != "" do
       stripped_str = _strip_spaces(dice_str)
-
       validation_result = _validate(stripped_str) 
+
       case validation_result do
         {:ok, []} ->
           IO.inspect _parse(stripped_str)
