@@ -6,7 +6,8 @@ defmodule Dice do
   def parse(dice_str) when is_binary(dice_str) do
       stripped_str = _strip_spaces(dice_str)
 
-      case _validate(stripped_str) do
+      validation_result = _validate(stripped_str) 
+      case validation_result do
         {:ok, []} ->
           IO.inspect _parse(stripped_str)
           IO.puts stripped_str
@@ -44,16 +45,6 @@ defmodule Dice do
     end
   end
 
-  defp _empty_parens_clauses?(validation_tuple = {_, messages}, dice_str) do
-    match = Regex.match?(~r/\(\)/i, dice_str)
-
-    if match do
-      {:error, ["Empty clause in input!\n" | messages]}
-    else
-      validation_tuple
-    end
-  end
-
   defp _count_parens("", parens_count) do
     parens_count
   end
@@ -67,8 +58,14 @@ defmodule Dice do
     end
   end
 
-  defp _check_for_empty_parens_clauses() do
-    
+  defp _empty_parens_clauses?(validation_tuple = {_, messages}, dice_str) do
+    match = Regex.match?(~r/\(\)/i, dice_str)
+
+    if match do
+      {:error, ["Empty clause in input!\n" | messages]}
+    else
+      validation_tuple
+    end
   end
 
   defp _strip_spaces(dice_str) do
