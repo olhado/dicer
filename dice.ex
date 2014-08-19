@@ -27,35 +27,46 @@ defmodule DieRoll do
   end
 
   defp _valid_chars?(validation_tuple = {_, messages}, dice_str) do
-    valid_str = Regex.match?(~r/^[0-9d\-\+\*\/\(\)]+$/i, dice_str)
+    valid_str = Regex.match?(~r/^[0-9d\-\+\(]{1,1}[0-9d\-\+\*\/\(\)]*?[0-9\)]{1,1}$/i, dice_str)
 
     cond do
-      !valid_str  -> {:error, ["Dice string has invalid characters!\n" | messages]}
+      !valid_str  -> {:error, ["Dice string is not formatted correctly!\n" | messages]}
       valid_str   -> validation_tuple
     end
   end
 
   defp _correct_num_of_parens?(validation_tuple = {_, messages}, dice_str) do
-    parens_count = _count_parens(dice_str, 0)
+    parens_count_result = _count_parens(dice_str, 0)
 
-    if parens_count != 0 do
-      {:error, ["Parentheses do not match!\n" | messages]}
-    else
-      validation_tuple
+    cond do
+        {:early_end, _parens_count} == parens_count_result ->
+          {:error, ["Closing parenthesis does not match any opening parenthesis!\n" | messages]}
+
+        {:full_scan, parens_count} == parens_count_result and parens_count != 0 ->
+          {:error, ["Parentheses do not match!\n" | messages]}
+
+        true -> validation_tuple
     end
   end
 
   defp _count_parens("", parens_count) do
-    parens_count
+    {:full_scan, parens_count}
   end
 
-  defp _count_parens(dice_str, parens_count) do
-    char = String.at(dice_str, 0)
-    case char do
-      "("   -> _count_parens(String.slice(dice_str, 1..-1), parens_count + 1)
-      ")"   -> _count_parens(String.slice(dice_str, 1..-1), parens_count - 1)
-      _     -> _count_parens(String.slice(dice_str, 1..-1), parens_count)
-    end
+  defp _count_parens(_str, parens_count) when parens_count < 0 do
+    {:early_end, parens_count}
+  end
+
+  defp _count_parens(<< "(", str :: binary >>, parens_count) do
+    _count_parens(str, parens_count + 1)
+  end
+
+  defp _count_parens(<< ")", str :: binary >>, parens_count) do
+    _count_parens(str, parens_count - 1)
+  end
+
+  defp _count_parens(<< _, str :: binary >>, parens_count) when is_binary(str) do
+    _count_parens(str, parens_count)
   end
 
   defp _empty_parens_clauses?(validation_tuple = {_, messages}, dice_str) do
