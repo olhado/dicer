@@ -1,4 +1,5 @@
 defmodule Dice do
+  # TODO: Move terms to separate files
   defmodule ParsedScalarTerm do
     defstruct operand: nil, value: 0
   
@@ -36,7 +37,8 @@ defmodule Dice do
   def roll do
     raise "NOT IMPLEMENTED!!!"
   end
-  
+
+  # TODO: Move to Helper module and import to terms
   def determine_operand("") do
     "+"
   end
