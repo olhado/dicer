@@ -1,5 +1,5 @@
-defmodule Dice.Terms do
-  import Dice.Helpers
+defmodule Dicer.Terms do
+  import Dicer.Helpers
 
   defmodule Scalar do
     defstruct operand: nil, value: 0

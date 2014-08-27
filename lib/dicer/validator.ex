@@ -1,6 +1,6 @@
-defmodule Dice.Validator do
+defmodule Dicer.Validator do
 
-  @valid_chars_regex ~r/^[0-9d\-\+\(]{1,1}[0-9d\-\+\*\/\(\)]*?[0-9\)]{1,1}$/i
+  @valid_multiple_chars_regex ~r/^[0-9d\-\+\(]{1,1}[0-9d\-\+\*\/\(\)]*?[0-9\)]{1,1}$/i
   @valid_single_char_regex ~r/[0-9]/i
 
   def validate(dice_str) do
@@ -16,7 +16,7 @@ defmodule Dice.Validator do
         -> valid_str = Regex.match?(@valid_single_char_regex, dice_str)
 
       true
-        -> valid_str = Regex.match?(@valid_chars_regex, dice_str)
+        -> valid_str = Regex.match?(@valid_multiple_chars_regex, dice_str)
     end
 
     cond do

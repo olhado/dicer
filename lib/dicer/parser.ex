@@ -1,23 +1,23 @@
-defmodule Dice.Parser do
-  import Dice.Terms
+defmodule Dicer.Parser do
+  import Dicer.Validator
 
   @multiple_dice_regex ~r/^([\+\-\*\/]?)(\d+?)d(\d+)(.*)/i
   @single_die_regex ~r/^([\+\-\*\/]?)d(\d+)(.*)/i
   @scalar_regex ~r/^([\+\-\*\/]?)(\d+)(.*)/i
   @complex_regex ~r/^([\+\-\*\/]?)[\(]{1,1}([0-9d\-\*\+\/\(\)]+)[\)]{1,1}([\+\-\*\/]?.*)/i
 
-  def parse(dice_str) when is_binary(dice_str) and dice_str != "" do
-    dice_str |> _strip_spaces |> _parse
-  end
-
   def parse(dice_str, false) do
-    parse(dice_str)
+    dice_str
+    |> _strip_spaces
+    |>_parse
   end
 
   def parse(dice_str, true) do
-      case dice_str |> _strip_spaces |> _validate do
+      case dice_str |> validate do
         {:ok, valid_str, []} ->
-          parse(valid_str)
+          valid_str
+          |> _strip_spaces
+          |> _parse
 
         {:error, _invalid_str, reason} ->
           IO.puts reason
@@ -32,19 +32,19 @@ defmodule Dice.Parser do
   defp _parse(dice_str, result) do
     cond do
       match = Regex.run(@multiple_dice_regex, dice_str) ->
-        _parse(List.last(match), [Dice.new(match) | result])
+        _parse(List.last(match), [Dicer.Terms.Dice.new(match) | result])
       
       match = Regex.run(@single_die_regex, dice_str) ->
         die_list = List.insert_at(match, 2, "1")
-        _parse(List.last(match), [Dice.new(die_list) | result])
+        _parse(List.last(match), [Dicer.Terms.Dice.new(die_list) | result])
       
       match = Regex.run(@scalar_regex, dice_str) ->
-        _parse(List.last(match), [Scalar.new(match) | result])
+        _parse(List.last(match), [Dicer.Terms.Scalar.new(match) | result])
 
       match = Regex.run(@complex_regex, dice_str) ->
         [_, _, terms, _] = match
         parsed_inner_terms = _parse(terms)
-        _parse(List.last(match), [Complex.new(match, parsed_inner_terms) | result])
+        _parse(List.last(match), [Dicer.Terms.Complex.new(match, parsed_inner_terms) | result])
 
       true -> 
         Enum.reverse(result)

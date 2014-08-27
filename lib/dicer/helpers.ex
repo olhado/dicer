@@ -1,4 +1,4 @@
-defmodule Dice.Helpers do
+defmodule Dicer.Helpers do
   def determine_operand("") do
     "+"
   end
