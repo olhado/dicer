@@ -2,17 +2,16 @@ defmodule Dicer.Terms do
   import Dicer.Helpers
 
   defmodule Scalar do
-    defstruct operand: nil, value: 0
+    defstruct operand: nil, total: "0"
 
     def new([_, operand, value, _rest]) do
       op = determine_operand(operand)
-      {val, _} = Integer.parse(value)
-      %Scalar{operand: op, value: val}
+      %Scalar{operand: op, total: value}
     end
   end
 
   defmodule Dice do
-    defstruct operand: nil, quantity: 0, sides: 10
+    defstruct operand: nil, quantity: 0, sides: 10, roll_results: [], total: 0
 
     def new([_, operand, quantity, sides, _rest]) do
       op = determine_operand(operand)
@@ -23,7 +22,7 @@ defmodule Dicer.Terms do
   end
 
   defmodule Complex do
-    defstruct operand: nil, terms: []
+    defstruct operand: nil, terms: [], total: 0
 
     def new([_, operand, _terms, _rest], parsed_terms) do
       op = determine_operand(operand)
