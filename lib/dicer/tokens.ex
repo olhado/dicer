@@ -1,7 +1,7 @@
 defmodule Dicer.Tokens do
   defmodule Plus do
     @representation ~r/\A\+/
-    defstruct value: nil
+    defstruct value: "+"
 
     def get_regex() do
       @representation
@@ -10,7 +10,7 @@ defmodule Dicer.Tokens do
 
   defmodule Minus do
     @representation ~r/\A-/
-    defstruct value: nil
+    defstruct value: "-"
 
     def get_regex() do
       @representation
@@ -19,7 +19,7 @@ defmodule Dicer.Tokens do
 
   defmodule Multiply do
     @representation ~r/\A\*/
-    defstruct value: nil
+    defstruct value: "*"
 
     def get_regex() do
       @representation
@@ -28,7 +28,7 @@ defmodule Dicer.Tokens do
 
   defmodule Divide do
     @representation ~r/\A\//
-    defstruct value: nil
+    defstruct value: "/"
 
     def get_regex() do
       @representation
@@ -37,7 +37,7 @@ defmodule Dicer.Tokens do
 
   defmodule Exponent do
     @representation ~r/\A\^/
-    defstruct value: nil
+    defstruct value: "^"
 
     def get_regex() do
       @representation
@@ -46,7 +46,7 @@ defmodule Dicer.Tokens do
 
   defmodule Dice do
     @representation ~r/\A[dD]/
-    defstruct value: nil
+    defstruct value: "d"
 
     def get_regex() do
       @representation
@@ -64,7 +64,7 @@ defmodule Dicer.Tokens do
 
   defmodule LeftParenthesis do
     @representation ~r/\A\(/
-    defstruct value: nil
+    defstruct value: "("
 
     def get_regex() do
       @representation
@@ -73,7 +73,7 @@ defmodule Dicer.Tokens do
 
   defmodule RightParenthesis do
     @representation ~r/\A\)/
-    defstruct value: nil
+    defstruct value: ")"
 
     def get_regex() do
       @representation
@@ -82,7 +82,7 @@ defmodule Dicer.Tokens do
 
   defmodule End do
     @representation ~r/\A\z/
-    defstruct value: nil
+    defstruct value: ""
 
     def get_regex() do
       @representation
