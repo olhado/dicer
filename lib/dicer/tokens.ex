@@ -57,6 +57,12 @@ defmodule Dicer.Tokens do
     @representation ~r/\A(\d+(\.\d+)?)/
     defstruct value: nil
 
+    def convert_to_float(input = %Dicer.Tokens.Num{}) do
+      {num_val, _} = Float.parse(input.value)
+
+      Float.round(num_val,4)
+    end
+
     def get_regex() do
       @representation
     end

@@ -1,4 +1,19 @@
 defmodule Dicer.Lexer do
+
+  def tokenize(input) when is_binary(input) do
+    _tokenize(input)
+  end
+
+  defp _tokenize(input, result \\ [])
+  defp _tokenize("", result) do
+    result ++ [%Dicer.Tokens.End{}]
+  end
+
+  defp _tokenize(input, result) do
+    {token, remaining_input} = _process_next_token(input)
+    _tokenize(remaining_input, result ++ [token])
+  end
+
   def process_next_token(input) when is_binary(input) do
     _process_next_token(input)
   end
@@ -41,6 +56,3 @@ defmodule Dicer.Lexer do
     end
   end
 end
-
-  result = Dicer.Lexer.process_next_token("")
-  IO.inspect result
