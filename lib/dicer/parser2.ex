@@ -4,16 +4,14 @@ defmodule Dicer.Parser2 do
     input
     |> Dicer.Lexer.tokenize
     |> _parse2
+    |> IO.puts
   end
 
   defp _parse2(input, acc \\ 0.0)
   defp _parse2(input, acc) when is_list(input) do
-    result = _expression2(input, acc)
-
-    IO.puts result
+    _expression2(input, acc)
   end
 
-  defp _expression2(input, acc)
   defp _expression2([%Dicer.Tokens.Plus{} | tail], acc) do
       _expression2(tl(tail), acc + _number2(hd(tail)))
   end
@@ -22,26 +20,52 @@ defmodule Dicer.Parser2 do
       _expression2(tl(tail), acc - _number2(hd(tail)))
   end
 
-  defp _expression2([%Dicer.Tokens.End{} | nil], acc) do
+  defp _expression2([%Dicer.Tokens.End{} | _], acc) do
     acc
   end
 
-  defp _expression2([ | tail], acc) do
-      _expression2(tail, acc + _number2(token))
+  defp _expression2(input, _acc) do
+      {factor1, remaining_input} = _factor2(input, 0.0)
+      _expression2(remaining_input, factor1)
   end
 
-  defp _expression2(_, _acc) do
-    raise "Invalid Expression!"
+  # defp _expression2(_, _acc) do
+  #   raise "Invalid Expression!"
+  # end
+
+  defp _factor2([%Dicer.Tokens.Multiply{} | tail], acc) do
+      {num, remaining_input} = _number2(tail)
+      _factor2(remaining_input, acc * num)
   end
 
-  defp _number2(num = %Dicer.Tokens.Num{}) do
-    Dicer.Tokens.Num.convert_to_float(num)
+  defp _factor2([%Dicer.Tokens.Divide{} | tail], acc) do
+      {num, remaining_input} = _number2(tail)
+      _factor2(remaining_input, acc / num)
+  end
+
+  defp _factor2(input = [%Dicer.Tokens.End{} | _], acc) do
+    {acc, input}
+  end
+
+  defp _factor2(input, _acc) do
+      {num, remaining_input} = _number2(input)
+      _factor2(remaining_input, num)
+  end
+
+  # defp _factor2(_, _acc) do
+  #   raise "Invalid Expression!"
+  # end
+
+  defp _number2(input = [%Dicer.Tokens.Num{} | tail]) do
+    {Dicer.Tokens.Num.convert_to_float(hd(input)), tail}
   end
 
   defp _number2(_) do
     raise "Not A Number!"
   end
 
+
+  ####### V1
   def parse(input) when is_binary(input) do
 
     {result, new_input} = _expression(input)

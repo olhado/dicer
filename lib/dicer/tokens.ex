@@ -54,7 +54,7 @@ defmodule Dicer.Tokens do
   end
 
   defmodule Num do
-    @representation ~r/\A(\d+(\.\d+)?)/
+    @representation ~r/\A(\d*(\.\d+)?)/
     defstruct value: nil
 
     def convert_to_float(input = %Dicer.Tokens.Num{}) do
