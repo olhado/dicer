@@ -37,7 +37,10 @@ defmodule Dicer.Lexer do
           {%Dicer.Tokens.Exponent{}, String.slice(input, 1..-1)}
       Regex.match?(Dicer.Tokens.Dice.get_regex, input)
         ->
-          {%Dicer.Tokens.Dice{}, String.slice(input, 1..-1)}
+          [dice_str, quantity, sides] = Regex.run(Dicer.Tokens.Dice.get_regex, input)
+          {q, _} = Integer.parse quantity
+          {s, _} = Integer.parse sides
+          {%Dicer.Tokens.Dice{quantity: q, sides: s }, String.slice(input, String.length(dice_str)..-1)}
       Regex.match?(Dicer.Tokens.Num.get_regex, input)
         ->
           [num_str | _tail] = Regex.run(Dicer.Tokens.Num.get_regex, input)

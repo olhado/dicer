@@ -35,18 +35,9 @@ defmodule Dicer.Tokens do
     end
   end
 
-  defmodule Exponent do
-    @representation ~r/\A\^/
-    defstruct value: "^"
-
-    def get_regex() do
-      @representation
-    end
-  end
-
   defmodule Dice do
-    @representation ~r/\A[dD]/
-    defstruct value: "d"
+    @representation ~r/\A((\d*)[dD](\d+)?)/
+    defstruct quantity: 0, sides: 1
 
     def get_regex() do
       @representation
