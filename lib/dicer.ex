@@ -16,7 +16,10 @@ defmodule Dicer do
     |> Dicer.Parser.parse
   end
 
-  def roll do
-    raise "NOT IMPLEMENTED!!!"
+  def roll(input) when is_binary(input) do
+    input
+    |> Dicer.Validator.sanitize
+    |> Dicer.Lexer.tokenize
+    |> Dicer.Parser.evaluate
   end
 end

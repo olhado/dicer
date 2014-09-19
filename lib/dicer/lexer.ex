@@ -37,10 +37,7 @@ defmodule Dicer.Lexer do
           {%Dicer.Tokens.Exponent{}, String.slice(input, 1..-1)}
       Regex.match?(Dicer.Tokens.Dice.get_regex, input)
         ->
-          [dice_str, quantity, sides] = Regex.run(Dicer.Tokens.Dice.get_regex, input)
-          {q, _} = Integer.parse quantity
-          {s, _} = Integer.parse sides
-          {%Dicer.Tokens.Dice{quantity: q, sides: s }, String.slice(input, String.length(dice_str)..-1)}
+          _process_and_create_dice_token(input)
       Regex.match?(Dicer.Tokens.Num.get_regex, input)
         ->
           [num_str | _tail] = Regex.run(Dicer.Tokens.Num.get_regex, input)
@@ -57,5 +54,18 @@ defmodule Dicer.Lexer do
       true
         -> raise "Unknown Token!"
     end
+  end
+
+  defp _process_and_create_dice_token(input) do
+    [_, dice_str, quantity, sides] = Regex.run(Dicer.Tokens.Dice.get_regex, input)
+    {s, _} = Integer.parse sides
+
+    q = case quantity do
+      ""  -> 1
+      _   -> 
+        {result, _} = Integer.parse quantity
+        result
+    end
+    {%Dicer.Tokens.Dice{quantity: q, sides: s }, String.slice(input, String.length(dice_str)..-1)}
   end
 end
