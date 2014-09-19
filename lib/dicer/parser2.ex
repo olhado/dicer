@@ -27,16 +27,12 @@ defmodule Dicer.Parser2 do
       _expression(remaining_input, acc - factor1)
   end
 
-  defp _expression(input, _acc) do
-      {remaining_input, factor1} = _factor(input, 0.0)
+  defp _expression(input, acc) do
+      {remaining_input, factor1} = _factor(input, acc)
       _expression(remaining_input, factor1)
   end
 
 ### Factors
-  defp _factor(input = [%Dicer.Tokens.End{} | _], acc) do
-    {input, acc}
-  end
-
   defp _factor([%Dicer.Tokens.Multiply{} | tail], acc) do
     {remaining_input, num} = _number_or_dice(tail)
     _factor(remaining_input, acc * num)
@@ -47,14 +43,16 @@ defmodule Dicer.Parser2 do
       _factor(remaining_input, acc / num)
   end
 
-    defp _factor(input = [%Dicer.Tokens.Num{} | _], acc) do
-      {remaining_input, num} = _number_or_dice(input)
-      _factor(remaining_input, num)
+  defp _factor(input = [%Dicer.Tokens.Num{} | _], acc) do
+    _number_or_dice(input)
   end
 
-  defp _factor(input, _acc) do
-    {remaining_input, num} = _number_or_dice(input)
-    _factor(remaining_input, num)
+  defp _factor(input = [%Dicer.Tokens.End{} | _], acc) do
+    {input, acc}
+  end
+
+  defp _factor(input, acc) do
+    {input, acc}
   end
 
 ### Numbers/Dice
