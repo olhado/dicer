@@ -18,12 +18,12 @@ defmodule Dicer.Parser2 do
   end
 
   defp _expression([%Dicer.Tokens.Plus{} | tail], acc) do
-      {remaining_input, factor1} = _factor(tail, 0.0)
+      {remaining_input, factor1} = _factor(tail, acc)
       _expression(remaining_input, acc + factor1)
   end
 
   defp _expression([%Dicer.Tokens.Minus{} | tail], acc) do
-      {remaining_input, factor1} = _factor(tail, 0.0)
+      {remaining_input, factor1} = _factor(tail, acc)
       _expression(remaining_input, acc - factor1)
   end
 
@@ -33,6 +33,10 @@ defmodule Dicer.Parser2 do
   end
 
 ### Factors
+  defp _factor(input = [%Dicer.Tokens.End{} | _], acc) do
+    {input, acc}
+  end
+
   defp _factor([%Dicer.Tokens.Multiply{} | tail], acc) do
     {remaining_input, num} = _number_or_dice(tail)
     _factor(remaining_input, acc * num)
@@ -43,21 +47,20 @@ defmodule Dicer.Parser2 do
       _factor(remaining_input, acc / num)
   end
 
-  defp _factor(input = [%Dicer.Tokens.Num{} | _], acc) do
-    _number_or_dice(input)
-  end
-
-  defp _factor(input = [%Dicer.Tokens.End{} | _], acc) do
-    {input, acc}
-  end
-
   defp _factor(input, acc) do
-    {input, acc}
+    case _number_or_dice(input) do
+      {remaining_input, :not_a_num} ->
+        {remaining_input, acc}
+      {remaining_input, num} ->
+        _factor(remaining_input, num)
+      true ->
+        raise "Unexpected input!"
+    end
   end
 
 ### Numbers/Dice
-  defp _number_or_dice([%Dicer.Tokens.Dice{} | tail]) do
-    {tail, 666}
+  defp _number_or_dice(input = [%Dicer.Tokens.Dice{} | tail]) do
+    {tail, _roll(hd(input))}
   end
 
   defp _number_or_dice(input = [%Dicer.Tokens.Num{} | tail]) do
@@ -65,7 +68,21 @@ defmodule Dicer.Parser2 do
     {tail, num}
   end
 
-  defp _number_or_dice(_) do
-    raise "Not A Number!"
+  defp _number_or_dice(input) do
+    {input, :not_a_num}
+  end
+
+  defp _roll(input = %Dicer.Tokens.Dice{}) do
+    << a :: 32, b :: 32, c :: 32 >> = :crypto.rand_bytes(12)
+    :random.seed(a,b,c)
+    _roll(input.sides, input.quantity, 0)
+  end
+
+  defp _roll(_sides, 0, acc) do
+    acc
+  end
+
+  defp _roll(sides, rolls_left, acc) do
+    _roll(sides, rolls_left - 1, acc + :random.uniform(sides))
   end
 end

@@ -32,9 +32,6 @@ defmodule Dicer.Lexer do
       Regex.match?(Dicer.Tokens.Divide.get_regex, input)
         ->
           {%Dicer.Tokens.Divide{}, String.slice(input, 1..-1)}
-      Regex.match?(Dicer.Tokens.Exponent.get_regex, input)
-        ->
-          {%Dicer.Tokens.Exponent{}, String.slice(input, 1..-1)}
       Regex.match?(Dicer.Tokens.Dice.get_regex, input)
         ->
           _process_and_create_dice_token(input)
