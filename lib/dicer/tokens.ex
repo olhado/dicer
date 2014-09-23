@@ -35,6 +35,24 @@ defmodule Dicer.Tokens do
     end
   end
 
+  defmodule LeftParenthesis do
+    @representation ~r/\A\(/
+    defstruct value: "("
+
+    def get_regex() do
+      @representation
+    end
+  end
+
+  defmodule RightParenthesis do
+    @representation ~r/\A\)/
+    defstruct value: ")"
+
+    def get_regex() do
+      @representation
+    end
+  end
+
   defmodule Dice do
     @representation ~r/\A((\d*)[dD](\d+)?)/
     defstruct quantity: 0, sides: 1
@@ -53,24 +71,6 @@ defmodule Dicer.Tokens do
 
       Float.round(num_val,4)
     end
-
-    def get_regex() do
-      @representation
-    end
-  end
-
-  defmodule LeftParenthesis do
-    @representation ~r/\A\(/
-    defstruct value: "("
-
-    def get_regex() do
-      @representation
-    end
-  end
-
-  defmodule RightParenthesis do
-    @representation ~r/\A\)/
-    defstruct value: ")"
 
     def get_regex() do
       @representation

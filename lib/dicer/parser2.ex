@@ -1,20 +1,21 @@
 defmodule Dicer.Parser2 do
-
   def parse(input) when is_binary(input) do
     input
     |> Dicer.Lexer.tokenize
     |> _parse
-    |> IO.puts
+    |> IO.inspect
   end
 
   defp _parse(input, acc \\ 0.0)
   defp _parse(input, acc) when is_list(input) do
+    << a :: 32, b :: 32, c :: 32 >> = :crypto.rand_bytes(12)
+    :random.seed(a,b,c)
     _expression(input, acc)
   end
 
 ### Expressions
   defp _expression([%Dicer.Tokens.End{} | _], acc) do
-    acc
+    {[], acc}
   end
 
   defp _expression([%Dicer.Tokens.Plus{} | tail], acc) do
@@ -59,6 +60,16 @@ defmodule Dicer.Parser2 do
   end
 
 ### Numbers/Dice
+  defp _number_or_dice([%Dicer.Tokens.LeftParenthesis{} | tail]) do
+    {remaining_input, num} = _expression(tail, 0.0)
+    case hd(remaining_input) do
+      %Dicer.Tokens.RightParenthesis{} ->
+        {tl(remaining_input), num}
+      true ->
+        raise "No Matching Parenthesis!"
+    end
+  end
+
   defp _number_or_dice(input = [%Dicer.Tokens.Dice{} | tail]) do
     {tail, _roll(hd(input))}
   end
@@ -73,8 +84,6 @@ defmodule Dicer.Parser2 do
   end
 
   defp _roll(input = %Dicer.Tokens.Dice{}) do
-    << a :: 32, b :: 32, c :: 32 >> = :crypto.rand_bytes(12)
-    :random.seed(a,b,c)
     _roll(input.sides, input.quantity, 0)
   end
 
