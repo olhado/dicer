@@ -18,19 +18,27 @@ defmodule Dicer.Parser2 do
     {[], acc}
   end
 
-  defp _expression([%Dicer.Tokens.Plus{} | tail], acc) do
+  defp _expression(input = [head | tail], acc) do
+    {_remaining_input, num} = _factor(head, acc)
+    _expression2(tail, num)
+  end
+
+  defp _expression2([%Dicer.Tokens.Plus{} | tail], acc) do
       {remaining_input, factor1} = _factor(tail, acc)
-      _expression(remaining_input, acc + factor1)
+      _expression2(remaining_input, acc + factor1)
   end
 
   defp _expression([%Dicer.Tokens.Minus{} | tail], acc) do
       {remaining_input, factor1} = _factor(tail, acc)
-      _expression(remaining_input, acc - factor1)
+      _expression2(remaining_input, acc - factor1)
   end
 
-  defp _expression(input, acc) do
-      {remaining_input, factor1} = _factor(input, acc)
-      _expression(remaining_input, factor1)
+  defp _expression2([%Dicer.Tokens.End{} | _], acc) do
+      {:ok, acc}
+  end
+
+  defp _expression2(_, acc) do
+    {:invalid, acc}
   end
 
 ### Factors
@@ -38,7 +46,12 @@ defmodule Dicer.Parser2 do
     {input, acc}
   end
 
-  defp _factor([%Dicer.Tokens.Multiply{} | tail], acc) do
+  defp _factor(input = [head | tail], acc) do
+    {_remaining_input, num} = _number_or_dice(head)
+    _factor2(tail, num)
+  end
+
+  defp _factor2([%Dicer.Tokens.Multiply{} | tail], acc) do
     {remaining_input, num} = _number_or_dice(tail)
     _factor(remaining_input, acc * num)
   end
@@ -60,13 +73,13 @@ defmodule Dicer.Parser2 do
   end
 
 ### Numbers/Dice
-  # defp _number_or_dice([%Dicer.Tokens.LeftParenthesis{} | tail]) do
-  #   {remaining_input, num} = _expression(tail, 0.0)
-  # end
+  defp _number_or_dice(input = [%Dicer.Tokens.LeftParenthesis{} | tail]) do
+    _expression(tail, 0.0)
+  end
 
-  # defp _number_or_dice([%Dicer.Tokens.RightParenthesis{} | tail]) do
-    
-  # end
+  defp _number_or_dice(input = [%Dicer.Tokens.RightParenthesis{} | tail]) do
+    {tail, _roll(hd(input))}
+  end
 
   defp _number_or_dice(input = [%Dicer.Tokens.Dice{} | tail]) do
     {tail, _roll(hd(input))}
