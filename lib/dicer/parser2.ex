@@ -60,15 +60,13 @@ defmodule Dicer.Parser2 do
   end
 
 ### Numbers/Dice
-  defp _number_or_dice([%Dicer.Tokens.LeftParenthesis{} | tail]) do
-    {remaining_input, num} = _expression(tail, 0.0)
-    case hd(remaining_input) do
-      %Dicer.Tokens.RightParenthesis{} ->
-        {tl(remaining_input), num}
-      true ->
-        raise "No Matching Parenthesis!"
-    end
-  end
+  # defp _number_or_dice([%Dicer.Tokens.LeftParenthesis{} | tail]) do
+  #   {remaining_input, num} = _expression(tail, 0.0)
+  # end
+
+  # defp _number_or_dice([%Dicer.Tokens.RightParenthesis{} | tail]) do
+    
+  # end
 
   defp _number_or_dice(input = [%Dicer.Tokens.Dice{} | tail]) do
     {tail, _roll(hd(input))}
