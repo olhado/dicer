@@ -55,7 +55,7 @@ defmodule Dicer.Tokens do
 
   defmodule Dice do
     @representation ~r/\A((\d*)[dD](\d+)?)/
-    defstruct quantity: 0, sides: 1
+    defstruct quantity: 0, sides: 1, values: []
 
     def get_regex() do
       @representation
