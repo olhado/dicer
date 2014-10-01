@@ -1,4 +1,4 @@
-defmodule Dicer.Parser2 do
+defmodule Dicer.Parser do
   def evaluate(input) when is_list(input) do
     _expression(input)
   end

@@ -4,6 +4,6 @@ defmodule Dicer do
     |> Dicer.Validator.sanitize
     |> Dicer.Lexer.tokenize
     |> Dicer.Roller.roll_dice
-    |> Dicer.Parser2.evaluate
+    |> Dicer.Parser.evaluate
   end
 end
