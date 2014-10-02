@@ -17,6 +17,10 @@ defmodule DicerTest do
     assert Dicer.roll("1.23456789") == {[%Dicer.Tokens.End{}], 1.2346}
   end
 
+  test "rolling dice" do
+    assert Dicer.roll("10d1") == {[%Dicer.Tokens.End{}], 10.0}
+  end
+
   test "addition" do
     assert Dicer.roll("1+0.5") == {[%Dicer.Tokens.End{}], 1.5}
   end
@@ -32,4 +36,22 @@ defmodule DicerTest do
   test "division" do
     assert Dicer.roll("1/0.5") == {[%Dicer.Tokens.End{}], 2.0}
   end
+
+  test "parentheses" do
+    assert Dicer.roll("(1.2222)") == {[%Dicer.Tokens.End{}], 1.2222}
+  end
+
+  test "nested parentheses" do
+    assert Dicer.roll("1-(6-((12)+400))") == {[%Dicer.Tokens.End{}], 407.0}
+  end
+
+  test "dice roll results stay in expected range" do
+    for _ <- 1..1000 do
+      {end_token, value} = Dicer.roll("2d20")
+      # IO.puts value # TODO: Replace with Logger!
+      assert end_token == [%Dicer.Tokens.End{}]
+      assert value >= 2 and value <= 40
+    end
+  end
+
 end
