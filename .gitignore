@@ -1,2 +1,5 @@
-**/*.beam
 **/*.sublime-workspace
+/_build
+/deps
+erl_crash.dump
+*.ez
