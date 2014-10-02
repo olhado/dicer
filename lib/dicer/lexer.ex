@@ -6,12 +6,12 @@ defmodule Dicer.Lexer do
 
   defp _tokenize(input, result \\ [])
   defp _tokenize("", result) do
-    result ++ [%Dicer.Tokens.End{}]
+    Enum.reverse([%Dicer.Tokens.End{}] ++ result)
   end
 
   defp _tokenize(input, result) do
     {token, remaining_input} = _process_next_token(input)
-    _tokenize(remaining_input, result ++ [token])
+    _tokenize(remaining_input,  [token] ++ result)
   end
 
   def process_next_token(input) when is_binary(input) do

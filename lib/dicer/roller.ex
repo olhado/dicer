@@ -8,17 +8,17 @@ defmodule Dicer.Roller do
 
   defp _roll(input, output \\ [])
   defp _roll([], output) do
-    output
+    Enum.reverse output
   end
 
   defp _roll(input = [%Dicer.Tokens.Dice{} | tail], output) do
     dice = hd(input)
     roll_results = _do_roll(dice.quantity, dice.sides, [])
-    _roll(tail, output ++ [%{dice | values: roll_results}])
+    _roll(tail, [%{dice | values: roll_results}] ++ output)
   end
 
   defp _roll([head | tail], output) do
-    _roll(tail, output ++ [head])
+    _roll(tail, [head] ++ output)
   end
 
   defp _do_roll(0, _sides, results) do
@@ -26,6 +26,6 @@ defmodule Dicer.Roller do
   end
 
   defp _do_roll(rolls_left, sides, results) do
-    _do_roll(rolls_left - 1, sides, results ++ [:random.uniform(sides)])
+    _do_roll(rolls_left - 1, sides, [:random.uniform(sides)] ++ results)
   end
 end
