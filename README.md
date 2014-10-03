@@ -12,7 +12,7 @@ Assuming you have Elixir (and Erlang) installed, simply download the source and 
 
 From here, execute rolls like this:
 
-`iex(1)> Dicer.roll "1+2+3"'
+`iex(1)> Dicer.roll "1+2+3"`
 
 Details
 =======
