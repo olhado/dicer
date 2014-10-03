@@ -17,4 +17,4 @@ From here, execute rolls like this:
 Details
 =======
 
-Dicer is an elixir application that lets you evaluate dice rolls with simple arithmetic operators. the operators supported are `+, -, /, *`, grouping via parentheses, and designating dice via <quantity>d<sides> format (Ex. 20d8 or D100).
+Dicer is an elixir application that lets you evaluate dice rolls with simple arithmetic operators. the operators supported are `+, -, /, *`, grouping via parentheses, and designating dice via `<quantity>d<sides>` format (Ex. 20d8 or D100).
