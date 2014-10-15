@@ -1,70 +1,107 @@
 defmodule Dicer.Parser do
-  def evaluate(input) when is_list(input) do
-    _expression(input)
+  alias Dicer.Tokens
+
+  def evaluate({:ok, input}) when is_list(input) do
+    case _expression(input) do
+      {[%Tokens.End{}], result} ->
+        result
+
+      {:error, error_details} ->
+        {:error, error_details}
+
+      _ ->
+        {:error, "Unexpected error in parser!"}
+    end
+  end
+
+  def evaluate(input = {:error, _}) do
+    input
   end
 
 ### Expressions
+  defp _expression([%Tokens.End{}]) do
+    {[%Tokens.End{}], 0.0}
+  end
+
   defp _expression(input) do
-    {remaining_input, num} = _factor(input)
-    _additives(remaining_input, num)
+    case _factor(input) do
+      {:error, message} -> {:error, message}
+
+      {remaining_input, num} -> _add_or_delete(remaining_input, num)
+    end
   end
 
-  defp _additives([%Dicer.Tokens.Plus{} | tail], acc) do
-      {remaining_input, factor1} = _factor(tail)
-      _additives(remaining_input, acc + factor1)
+  defp _add_or_delete([%Tokens.Plus{} | tail], acc) do
+    case _factor(tail) do
+      {:error, message} -> {:error, message}
+
+      {remaining_input, factor1} -> _add_or_delete(remaining_input, acc + factor1)
+    end
   end
 
-  defp _additives([%Dicer.Tokens.Minus{} | tail], acc) do
-      {remaining_input, factor1} = _factor(tail)
-      _additives(remaining_input, acc - factor1)
-  end
+  defp _add_or_delete([%Tokens.Minus{} | tail], acc) do
+    case _factor(tail) do
+      {:error, message} -> {:error, message}
 
-  defp _additives(input, acc) do
-      {input, acc}
+      {remaining_input, factor1} -> _add_or_delete(remaining_input, acc - factor1)
+    end  end
+
+  defp _add_or_delete(input, acc) do
+    {input, acc}
   end
 
 ### Factors
   defp _factor(input) do
-    {remaining_input, num} = _number_or_dice(input)
-    _multiplicatives(remaining_input, num)
-  end
+    case _number_or_dice(input) do
+      {:error, message} -> {:error, message}
 
-  defp _multiplicatives([%Dicer.Tokens.Multiply{} | tail], acc) do
-    {remaining_input, num} = _number_or_dice(tail)
-    _multiplicatives(remaining_input, acc * num)
-  end
-
-  defp _multiplicatives([%Dicer.Tokens.Divide{} | tail], acc) do
-     {remaining_input, num} = _number_or_dice(tail)
-      _multiplicatives(remaining_input, acc / num)
-  end
-
-  defp _multiplicatives(input, acc) do
-      {input, acc}
-  end
-
-### Numbers/Dice
-  defp _number_or_dice([%Dicer.Tokens.LeftParenthesis{} | tail]) do
-    {remaining_input, num} = _expression(tail)
-    case hd(remaining_input) do
-      %Dicer.Tokens.RightParenthesis{} ->
-        {tl(remaining_input), num}
-      _ ->
-        raise "Missing closing parenthesis!"
+      {remaining_input, num} -> _multiply_or_divide(remaining_input, num)
     end
   end
 
-  defp _number_or_dice(input = [%Dicer.Tokens.Dice{} | tail]) do
+  defp _multiply_or_divide([%Tokens.Multiply{} | tail], acc) do
+    case _number_or_dice(tail) do
+      {:error, message} -> {:error, message}
+
+      {remaining_input, num} -> _multiply_or_divide(remaining_input, acc * num)
+    end
+  end
+
+  defp _multiply_or_divide([%Tokens.Divide{} | tail], acc) do
+    case _number_or_dice(tail) do
+      {:error, message} -> {:error, message}
+
+      {remaining_input, num} -> _multiply_or_divide(remaining_input, acc / num)
+    end
+  end
+
+  defp _multiply_or_divide(input, acc) do
+    {input, acc}
+  end
+
+### Numbers/Dice
+  defp _number_or_dice([%Tokens.LeftParenthesis{} | tail]) do
+    {remaining_input, num} = _expression(tail)
+    case hd(remaining_input) do
+      %Tokens.RightParenthesis{} ->
+        {tl(remaining_input), num}
+      
+      _ ->
+        {:error, "Missing closing parenthesis!"}
+    end
+  end
+
+  defp _number_or_dice(input = [%Tokens.Dice{} | tail]) do
     dice_rolls = hd(input)
     {tail, Enum.sum(dice_rolls.values)}
   end
 
-  defp _number_or_dice(input = [%Dicer.Tokens.Num{} | tail]) do
-    num = Dicer.Tokens.Num.convert_to_float(hd(input))
+  defp _number_or_dice(input = [%Tokens.Num{} | tail]) do
+    num = Tokens.Num.convert_to_float(hd(input))
     {tail, num}
   end
 
-  defp _number_or_dice(input) do
-    {input, 0.0}
+  defp _number_or_dice([%Tokens.RightParenthesis{} | _tail]) do
+    {:error, "Missing opening parenthesis!"}
   end
 end

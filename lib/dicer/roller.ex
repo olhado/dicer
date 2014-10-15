@@ -1,17 +1,22 @@
 defmodule Dicer.Roller do
+  alias Dicer.Tokens
 
-  def roll_dice(input) when is_list(input) do
+  def roll_dice({:ok, input}) when is_list(input) do
     << a :: 32, b :: 32, c :: 32 >> = :crypto.rand_bytes(12)
     :random.seed(a,b,c)
     _roll(input)
   end
 
-  defp _roll(input, output \\ [])
-  defp _roll([], output) do
-    Enum.reverse output
+  def roll_dice(input = {:error, _}) do
+    input
   end
 
-  defp _roll(input = [%Dicer.Tokens.Dice{} | tail], output) do
+  defp _roll(input, output \\ [])
+  defp _roll([], output) do
+    {:ok, Enum.reverse output}
+  end
+
+  defp _roll(input = [%Tokens.Dice{} | tail], output) do
     dice = hd(input)
     roll_results = _do_roll(dice.quantity, dice.sides, [])
     _roll(tail, [%{dice | values: roll_results}] ++ output)

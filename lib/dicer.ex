@@ -1,9 +1,14 @@
 defmodule Dicer do
+  alias Dicer.Validator
+  alias Dicer.Lexer
+  alias Dicer.Roller
+  alias Dicer.Parser
+
   def roll(input) when is_binary(input) do
     input
-    |> Dicer.Validator.sanitize
-    |> Dicer.Lexer.tokenize
-    |> Dicer.Roller.roll_dice
-    |> Dicer.Parser.evaluate
+    |> Validator.sanitize
+    |> Lexer.tokenize
+    |> Roller.roll_dice
+    |> Parser.evaluate
   end
 end
