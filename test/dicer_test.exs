@@ -60,32 +60,4 @@ defmodule DicerTest do
   test "all operators together" do
     assert Dicer.roll("1000-350/2*3+(100/(20*5))-575+100d1") == {:ok, 1.0}
   end
-
-  test "unbalanced left parentheses" do
-    assert Dicer.roll("(123)+(") == {:error, "Missing closing parenthesis!"}
-  end
-
-  test "unbalanced right parentheses" do
-    assert Dicer.roll("(123)+)") == {:error, "Missing opening parenthesis!"}
-  end
-
-  test "gibberish" do
-    assert Dicer.roll("a") == {:error, "Invalid Token!"}
-  end
-
-  test "more gibberish" do
-    assert Dicer.roll("abcdef%") == {:error, "Invalid Token!"}
-  end
-
-  test "some valid with gibberish" do
-    assert Dicer.roll("(1*6)/30d4*abcdef%") == {:error, "Invalid Token!"}
-  end
-
-  test "bad math" do
-    assert Dicer.roll("1/0") == {:error, "bad argument in arithmetic expression"}
-  end
-
-  test "more bad math" do
-    assert Dicer.roll("0/0") == {:error, "bad argument in arithmetic expression"}
-  end
 end
