@@ -17,6 +17,10 @@ defmodule DicerTest do
     assert Dicer.roll("10d1") == {:ok, 10.0}
   end
 
+  test "rolling one die, no quantity" do
+    assert Dicer.roll("1d1") == {:ok, 1.0}
+  end
+
   test "addition" do
     assert Dicer.roll("1+0.5") == {:ok, 1.5}
   end
@@ -39,9 +43,9 @@ defmodule DicerTest do
 
   test "dice roll results stay in expected range" do
     for _ <- 1..100 do
-      {:ok, value} = Dicer.roll("2d20")
+      {:ok, value} = Dicer.roll("d40")
       # IO.puts value # TODO: Replace with Logger!
-      assert value >= 2 and value <= 40
+      assert value >= 1 and value <= 40
     end
   end
 

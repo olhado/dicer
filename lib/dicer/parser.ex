@@ -31,6 +31,19 @@ defmodule Dicer.Parser do
     end
   end
 
+### _apply_expression/2 is a work in progress
+  defp _apply_expression([head | tail], acc) when head == %Tokens.Plus{} or head == %Tokens.Minus{} do
+    case _factor(tail) do
+      {:error, message} -> {:error, message}
+
+      {remaining_input, factor1} -> _apply_expression(remaining_input, head.function.(acc, factor1))
+    end
+  end
+
+    defp _apply_expression(input, acc) do
+    {input, acc}
+  end
+
   defp _add_or_delete([%Tokens.Plus{} | tail], acc) do
     case _factor(tail) do
       {:error, message} -> {:error, message}

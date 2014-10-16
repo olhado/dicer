@@ -56,11 +56,12 @@ defmodule Dicer.Lexer do
   end
 
   defp _process_and_create_dice_token(input) do
-    [_, dice_str, quantity, sides] = Regex.run(Tokens.Dice.get_regex, input)
+    [dice_str, quantity, sides] = Regex.run(Tokens.Dice.get_regex, input)
     {s, _} = Integer.parse sides
 
     case quantity do
-      "" -> 1
+      "" ->
+        {%Tokens.Dice{quantity: 1, sides: s }, String.slice(input, String.length(dice_str)..-1)}
 
       _ ->
         {result, _} = Integer.parse quantity

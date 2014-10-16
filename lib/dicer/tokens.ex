@@ -1,7 +1,7 @@
 defmodule Dicer.Tokens do
   defmodule Plus do
     @representation ~r/\A\+/
-    defstruct value: "+"
+    defstruct function: &(&1 + &2)
 
     def get_regex() do
       @representation
@@ -10,7 +10,7 @@ defmodule Dicer.Tokens do
 
   defmodule Minus do
     @representation ~r/\A-/
-    defstruct value: "-"
+    defstruct function: &(&1 - &2)
 
     def get_regex() do
       @representation
@@ -19,7 +19,7 @@ defmodule Dicer.Tokens do
 
   defmodule Multiply do
     @representation ~r/\A\*/
-    defstruct value: "*"
+    defstruct function: &(&1 * &2)
 
     def get_regex() do
       @representation
@@ -28,7 +28,7 @@ defmodule Dicer.Tokens do
 
   defmodule Divide do
     @representation ~r/\A\//
-    defstruct value: "/"
+    defstruct function: &(&1 / &2)
 
     def get_regex() do
       @representation
@@ -54,7 +54,7 @@ defmodule Dicer.Tokens do
   end
 
   defmodule Dice do
-    @representation ~r/\A((\d*)[dD](\d+)?)/
+    @representation ~r/\A(\d*)[dD](\d+)/
     defstruct quantity: 0, sides: 1, values: []
 
     def get_regex() do
