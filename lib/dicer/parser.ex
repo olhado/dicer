@@ -27,39 +27,21 @@ defmodule Dicer.Parser do
     case _factor(input) do
       {:error, message} -> {:error, message}
 
-      {remaining_input, num} -> _add_or_delete(remaining_input, num)
+      {remaining_input, num} -> _apply_expression(remaining_input, num)
     end
   end
 
-### _apply_expression/2 is a work in progress
-  defp _apply_expression([head | tail], acc) when head == %Tokens.Plus{} or head == %Tokens.Minus{} do
+  ### TODO: Jose sez guard is ugly until Erlang (and thus Elixir) support accessing map fields in guards
+  ### (https://groups.google.com/d/msg/elixir-lang-talk/rprxcoQERbA/La08lNry81AJ)
+  defp _apply_expression([head = %{__struct__: var} | tail], acc) when var in [Tokens.Plus] or var in [Tokens.Minus] do
     case _factor(tail) do
       {:error, message} -> {:error, message}
 
-      {remaining_input, factor1} -> _apply_expression(remaining_input, head.function.(acc, factor1))
+      {remaining_input, factor} -> _apply_expression(remaining_input, head.function.(acc, factor))
     end
   end
 
     defp _apply_expression(input, acc) do
-    {input, acc}
-  end
-
-  defp _add_or_delete([%Tokens.Plus{} | tail], acc) do
-    case _factor(tail) do
-      {:error, message} -> {:error, message}
-
-      {remaining_input, factor1} -> _add_or_delete(remaining_input, acc + factor1)
-    end
-  end
-
-  defp _add_or_delete([%Tokens.Minus{} | tail], acc) do
-    case _factor(tail) do
-      {:error, message} -> {:error, message}
-
-      {remaining_input, factor1} -> _add_or_delete(remaining_input, acc - factor1)
-    end  end
-
-  defp _add_or_delete(input, acc) do
     {input, acc}
   end
 
@@ -68,27 +50,21 @@ defmodule Dicer.Parser do
     case _number_or_dice(input) do
       {:error, message} -> {:error, message}
 
-      {remaining_input, num} -> _multiply_or_divide(remaining_input, num)
+      {remaining_input, num} -> _apply_factor(remaining_input, num)
     end
   end
 
-  defp _multiply_or_divide([%Tokens.Multiply{} | tail], acc) do
+  ### TODO: Jose sez guard is ugly until Erlang (and thus Elixir) support accessing map fields in guards
+  ### (https://groups.google.com/d/msg/elixir-lang-talk/rprxcoQERbA/La08lNry81AJ)
+  defp _apply_factor([head = %{__struct__: var} | tail], acc) when var in [Tokens.Multiply] or var in [Tokens.Divide] do
     case _number_or_dice(tail) do
       {:error, message} -> {:error, message}
 
-      {remaining_input, num} -> _multiply_or_divide(remaining_input, acc * num)
+      {remaining_input, num} -> _apply_factor(remaining_input, head.function.(acc, num))
     end
   end
 
-  defp _multiply_or_divide([%Tokens.Divide{} | tail], acc) do
-    case _number_or_dice(tail) do
-      {:error, message} -> {:error, message}
-
-      {remaining_input, num} -> _multiply_or_divide(remaining_input, acc / num)
-    end
-  end
-
-  defp _multiply_or_divide(input, acc) do
+    defp _apply_factor(input, acc) do
     {input, acc}
   end
 
@@ -116,5 +92,9 @@ defmodule Dicer.Parser do
 
   defp _number_or_dice([%Tokens.RightParenthesis{} | _tail]) do
     {:error, "Missing opening parenthesis!"}
+  end
+
+  defp _number_or_dice(input) do
+    {input, 0.0}
   end
 end
