@@ -60,7 +60,14 @@ defmodule Dicer.Parser do
     case _number_or_dice(tail) do
       {:error, message} -> {:error, message}
 
-      {remaining_input, num} -> _apply_factor(remaining_input, head.function.(acc, num))
+      # Catch divide by zero errors
+      {remaining_input, num} -> 
+        try do
+          calculation = head.function.(acc, num)
+          _apply_factor(remaining_input, calculation)
+        rescue
+          e in ArithmeticError -> {:error, Exception.message(e)}
+       end
     end
   end
 

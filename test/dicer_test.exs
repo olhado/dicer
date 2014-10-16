@@ -9,6 +9,10 @@ defmodule DicerTest do
     assert Dicer.roll("1") == {:ok, 1.0}
   end
 
+  test "negative number" do
+    assert Dicer.roll("-1") == {:ok, -1.0}
+  end
+
   test "single float" do
     assert Dicer.roll("1.23456789") == {:ok, 1.2346}
   end
@@ -75,5 +79,13 @@ defmodule DicerTest do
 
   test "some valid with gibberish" do
     assert Dicer.roll("(1*6)/30d4*abcdef%") == {:error, "Invalid Token!"}
+  end
+
+  test "bad math" do
+    assert Dicer.roll("1/0") == {:error, "bad argument in arithmetic expression"}
+  end
+
+  test "more bad math" do
+    assert Dicer.roll("0/0") == {:error, "bad argument in arithmetic expression"}
   end
 end
