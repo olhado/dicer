@@ -4,7 +4,7 @@ defmodule Dicer.Parser do
   def evaluate({:ok, input}) when is_list(input) do
     case _expression(input) do
       {[%Tokens.End{}], result} ->
-        {:ok, result}
+        {:ok, input, result}
 
       {:error, error_details} ->
         {:error, error_details}
