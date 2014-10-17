@@ -3,31 +3,31 @@ defmodule DicerErrorTest do
 
   ### Testing Error Cases
   test "unbalanced left parentheses" do
-    assert Dicer.roll("(123)+(") == {:error, "Missing closing parenthesis!"}
+    assert Dicer.roll("(123)+(") == {:error, ["Missing closing parenthesis!"]}
   end
 
   test "unbalanced right parentheses" do
-    assert Dicer.roll("(123)+)") == {:error, "Missing opening parenthesis!"}
+    assert Dicer.roll("(123)+)") == {:error, ["Missing opening parenthesis!"]}
   end
 
   test "gibberish" do
-    assert Dicer.roll("a") == {:error, "Invalid Token!"}
+    assert Dicer.roll("a") == {:error, ["Invalid Token!"]}
   end
 
   test "more gibberish" do
-    assert Dicer.roll("abcdef%") == {:error, "Invalid Token!"}
+    assert Dicer.roll("abcdef%") == {:error, ["Invalid Token!"]}
   end
 
   test "some valid with gibberish" do
-    assert Dicer.roll("(1*6)/30d4*abcdef%") == {:error, "Invalid Token!"}
+    assert Dicer.roll("(1*6)/30d4*abcdef%") == {:error, ["Invalid Token!"]}
   end
 
   test "bad math" do
-    assert Dicer.roll("1/0") == {:error, "bad argument in arithmetic expression"}
+    assert Dicer.roll("1/0") == {:error, ["bad argument in arithmetic expression"]}
   end
 
   test "more bad math" do
-    assert Dicer.roll("0/0") == {:error, "bad argument in arithmetic expression"}
+    assert Dicer.roll("0/0") == {:error, ["bad argument in arithmetic expression"]}
   end
 
   test "trailing operator (-)" do
@@ -62,7 +62,15 @@ defmodule DicerErrorTest do
     assert Dicer.roll("1+/*-1") == {:error, ["Improper operator format (Ex. 1--1)!"]}
   end
 
+  test "bad operator at start" do
+    assert Dicer.roll("/1") == {:error, ["Invalid operator(s) at beginning of input!"]}
+  end
+
   test "multiple validation errors" do
     assert Dicer.roll("1+/*-1-+") == {:error, ["Improper operator format (Ex. 1--1)!", "Trailing operator(s) on input!"]}
+  end
+
+  test "all validation errors" do
+    assert Dicer.roll("/1+/*-1-+") == {:error, ["Improper operator format (Ex. 1--1)!", "Trailing operator(s) on input!", "Invalid operator(s) at beginning of input!"]}
   end
 end

@@ -10,7 +10,7 @@ defmodule Dicer.Parser do
         {:error, error_details}
 
       _ ->
-        {:error, "Unexpected error in parser!"}
+        {:error, ["Unexpected error in parser!"]}
     end
   end
 
@@ -66,7 +66,7 @@ defmodule Dicer.Parser do
           calculation = head.function.(acc, num)
           _apply_factor(remaining_input, calculation)
         rescue
-          e in ArithmeticError -> {:error, Exception.message(e)}
+          e in ArithmeticError -> {:error, [Exception.message(e)]}
        end
     end
   end
@@ -83,7 +83,7 @@ defmodule Dicer.Parser do
         {tl(remaining_input), num}
       
       _ ->
-        {:error, "Missing closing parenthesis!"}
+        {:error, ["Missing closing parenthesis!"]}
     end
   end
 
@@ -98,7 +98,7 @@ defmodule Dicer.Parser do
   end
 
   defp _number_or_dice([%Tokens.RightParenthesis{} | _tail]) do
-    {:error, "Missing opening parenthesis!"}
+    {:error, ["Missing opening parenthesis!"]}
   end
 
   defp _number_or_dice(input) do

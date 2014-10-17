@@ -13,6 +13,10 @@ defmodule DicerTest do
     assert Dicer.roll("-1") == {:ok, -1.0}
   end
 
+  test "positive number" do
+    assert Dicer.roll("+1") == {:ok, 1.0}
+  end
+
   test "single float" do
     assert Dicer.roll("1.23456789") == {:ok, 1.2346}
   end

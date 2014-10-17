@@ -51,7 +51,7 @@ defmodule Dicer.Lexer do
 
       String.length(input) == 0 -> {%Tokens.End{}, ""}
 
-      true -> {:error, "Invalid Token!"}
+      true -> {:error, ["Invalid Token!"]}
     end
   end
 
