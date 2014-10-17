@@ -6,7 +6,12 @@ A dice roller expression evaluator written in Elixir!
 Installation
 ============
 
-I assume you have Elixir (and Erlang) installed.
+Pre-requisites
+--------------
+
+* Erlang 17 or greater
+* Elixir 1.0.1
+* git (to clone the repository)
 
 Creating a command line binary
 ------------------------------
