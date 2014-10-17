@@ -11,7 +11,7 @@ I assume you have Elixir (and Erlang) installed.
 Creating a command line binary
 ------------------------------
 
-* `mix escript.build`
+`mix escript.build`
 
 From here, execute rolls like this:
 
@@ -20,7 +20,7 @@ From here, execute rolls like this:
 Running in interactive shell
 ----------------------------
 
-* `iex -S mix`
+`iex -S mix`
 
 From here, execute rolls like this:
 
