@@ -6,9 +6,21 @@ A dice roller expression evaluator written in Elixir!
 Installation
 ============
 
-Assuming you have Elixir (and Erlang) installed, simply download the source and run the following in the root project directory:
+I assume you have Elixir (and Erlang) installed.
 
-`iex -S mix`
+Creating a command line binary
+------------------------------
+
+* `mix escript.build`
+
+From here, execute rolls like this:
+
+`$ dicer "1+2+3"`
+
+Running in interactive shell
+----------------------------
+
+* `iex -S mix`
 
 From here, execute rolls like this:
 

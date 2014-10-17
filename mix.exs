@@ -5,7 +5,8 @@ defmodule Dicer.Mixfile do
     [app: :dicer,
      version: "0.0.1",
      elixir: "~> 1.0.0",
-     deps: deps]
+     deps: deps,
+     escript: escript]
   end
 
   # Configuration for the OTP application
@@ -13,6 +14,10 @@ defmodule Dicer.Mixfile do
   # Type `mix help compile.app` for more information
   def application do
     [applications: [:logger]]
+  end
+
+  def escript do
+    [main_module: Dicer.CLI]
   end
 
   # Dependencies can be Hex packages:
