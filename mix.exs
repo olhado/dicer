@@ -42,7 +42,7 @@ defmodule Dicer.Mixfile do
   end
 
   defp package do
-     contributors: ["Michael Chmielewski"],
+     [contributors: ["Michael Chmielewski"],
      licenses: ["MIT License"],
      links: %{"GitHub" => "https://github.com/olhado/dicer"}]
   end
