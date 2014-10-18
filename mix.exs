@@ -3,10 +3,12 @@ defmodule Dicer.Mixfile do
 
   def project do
     [app: :dicer,
-     version: "0.0.1",
+     version: "0.1.0",
      elixir: "~> 1.0.0",
      deps: deps,
-     escript: escript]
+     escript: escript,
+     description: description,
+     package: package]
   end
 
   # Configuration for the OTP application
@@ -31,5 +33,17 @@ defmodule Dicer.Mixfile do
   # Type `mix help deps` for more examples and options
   defp deps do
     []
+  end
+
+  defp description do
+    """
+    Elixir library to calculate dice rolls.
+    """
+  end
+
+  defp package do
+     contributors: ["Michael Chmielewski"],
+     licenses: ["MIT License"],
+     links: %{"GitHub" => "https://github.com/olhado/dicer"}]
   end
 end
