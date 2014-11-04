@@ -71,19 +71,27 @@ defmodule Dicer.Parser do
     end
   end
 
-    defp _apply_factor(input, acc) do
+  defp _apply_factor(input, acc) do
     {input, acc}
   end
 
 ### Numbers/Dice
   defp _number_or_dice([%Tokens.LeftParenthesis{} | tail]) do
-    {remaining_input, num} = _expression(tail)
-    case hd(remaining_input) do
-      %Tokens.RightParenthesis{} ->
-        {tl(remaining_input), num}
-      
-      _ ->
-        {:error, ["Missing closing parenthesis!"]}
+    case _expression(tail) do
+      {:error, ["Missing opening parenthesis!"]} ->
+        {:error, ["Unbalanced parentheses!"]} 
+
+      result = {:error, _} ->
+        result
+
+      {remaining_input, num} ->
+        case hd(remaining_input) do
+          %Tokens.RightParenthesis{} ->
+            {tl(remaining_input), num}
+
+          _ ->
+            {:error, ["Missing closing parenthesis!"]}
+        end
     end
   end
 

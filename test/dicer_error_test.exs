@@ -10,6 +10,23 @@ defmodule DicerErrorTest do
     assert Dicer.roll("(123)+)") == {:error, ["Missing opening parenthesis!"]}
   end
 
+  test "nested bad parentheses (closing)" do
+    assert Dicer.roll("(((((((((()))))))))") == {:error, ["Unbalanced parentheses!"]}
+  end
+
+  test "nested bad parentheses (opening)" do
+    assert Dicer.roll("((((())))))") == {:error, ["Unbalanced parentheses!"]}
+  end
+
+  test "nested bad parentheses (closing, with inner value)" do
+    assert Dicer.roll("((((((((((0)))))))))") == {:error, ["Missing closing parenthesis!"]}
+  end
+
+  #TODO: Fix this error message
+  test "nested bad parentheses (opening, with inner value)" do
+    assert Dicer.roll("(((((0))))))") == {:error, ["Unexpected error in parser!"]}
+  end
+
   test "gibberish" do
     assert Dicer.roll("a") == {:error, ["Invalid Token!"]}
   end
