@@ -32,7 +32,7 @@ defmodule Dicer.Mixfile do
   #
   # Type `mix help deps` for more examples and options
   defp deps do
-    []
+    [{:sfmt, "~> 0.10.1"}]
   end
 
   defp description do

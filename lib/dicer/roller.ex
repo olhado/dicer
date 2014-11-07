@@ -3,7 +3,7 @@ defmodule Dicer.Roller do
 
   def roll_dice({:ok, input}) when is_list(input) do
     << a :: 32, b :: 32, c :: 32 >> = :crypto.rand_bytes(12)
-    :random.seed(a,b,c)
+    :sfmt.seed(a,b,c)
     _roll(input)
   end
 
@@ -31,6 +31,6 @@ defmodule Dicer.Roller do
   end
 
   defp _do_roll(rolls_left, sides, results) do
-    _do_roll(rolls_left - 1, sides, [:random.uniform(sides)] ++ results)
+    _do_roll(rolls_left - 1, sides, [:sfmt.uniform(sides)] ++ results)
   end
 end
