@@ -18,7 +18,7 @@ defmodule Dicer.Lexer do
     case _process_next_token(input) do
       {:error, message} -> {:error, message}
 
-      {token, remaining_input} -> _tokenize(remaining_input,  [token] ++ result)
+      {token, remaining_input} -> _tokenize(remaining_input,  [token | result])
     end
   end
 
@@ -45,13 +45,16 @@ defmodule Dicer.Lexer do
       Regex.match?(Tokens.Dice.get_regex, input) ->
         _process_and_create_dice_token(input)
 
+      Regex.match?(Tokens.FudgeDice.get_regex, input) ->
+        _process_and_create_fudge_dice_token(input)
+
       Regex.match?(Tokens.Num.get_regex, input) ->
         [num_str | _tail] = Regex.run(Tokens.Num.get_regex, input)
         {%Tokens.Num{value: num_str}, String.slice(input, String.length(num_str)..-1)}
 
       String.length(input) == 0 -> {%Tokens.End{}, ""}
 
-      true -> {:error, ["Invalid Token!"]}
+      true -> {:error, ["Input has unrecognized characters!"]}
     end
   end
 
@@ -66,6 +69,19 @@ defmodule Dicer.Lexer do
       _ ->
         {result, _} = Integer.parse quantity
         {%Tokens.Dice{quantity: result, sides: s }, String.slice(input, String.length(dice_str)..-1)}
+    end
+  end
+
+  defp _process_and_create_fudge_dice_token(input) do
+    [dice_str, quantity] = Regex.run(Tokens.FudgeDice.get_regex, input)
+
+    case quantity do
+      "" ->
+        {%Tokens.FudgeDice{quantity: 1}, String.slice(input, String.length(dice_str)..-1)}
+
+      _ ->
+        {result, _} = Integer.parse quantity
+        {%Tokens.FudgeDice{quantity: result}, String.slice(input, String.length(dice_str)..-1)}
     end
   end
 end

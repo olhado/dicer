@@ -97,7 +97,12 @@ defmodule Dicer.Parser do
 
   defp _number_or_dice(input = [%Tokens.Dice{} | tail]) do
     dice_rolls = hd(input)
-    {tail, Enum.sum(dice_rolls.values)}
+    {tail, Enum.sum(dice_rolls.counted_values)}
+  end
+
+  defp _number_or_dice(input = [%Tokens.FudgeDice{} | tail]) do
+    dice_rolls = hd(input)
+    {tail, Enum.sum(dice_rolls.counted_values)}
   end
 
   defp _number_or_dice(input = [%Tokens.Num{} | tail]) do

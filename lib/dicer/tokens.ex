@@ -55,7 +55,16 @@ defmodule Dicer.Tokens do
 
   defmodule Dice do
     @representation ~r/\A(\d*)[dD](\d+)/
-    defstruct quantity: 0, sides: 1, values: []
+    defstruct quantity: 0, sides: 1, counted_values: [], rejected_values: []
+
+    def get_regex() do
+      @representation
+    end
+  end
+
+  defmodule FudgeDice do
+    @representation ~r/\A(\d*)[dD][fF]/
+    defstruct quantity: 0, counted_values: [], rejected_values: []
 
     def get_regex() do
       @representation

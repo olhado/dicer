@@ -1,4 +1,5 @@
 defmodule Dicer do
+  alias Dicer.Sanitizer
   alias Dicer.Validator
   alias Dicer.Lexer
   alias Dicer.Roller
@@ -6,9 +7,9 @@ defmodule Dicer do
 
   def roll(input) when is_binary(input) do
     input
-    |> _sanitize
-    |> Validator.validate
+    |> Sanitizer.sanitize
     |> Lexer.tokenize
+    |> Validator.validate
     |> Roller.roll_dice
     |> Parser.evaluate
   end
@@ -32,9 +33,5 @@ defmodule Dicer do
 
   def roll!(_input) do
     raise "Not a string!"
-  end
-
-  defp _sanitize(input) do
-    String.replace(input, ~r/\s/, "")
   end
 end

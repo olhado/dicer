@@ -22,11 +22,17 @@ defmodule DicerTest do
   end
 
   test "rolling dice" do
-    assert Dicer.roll("10d1") == {:ok, [%Dicer.Tokens.Dice{quantity: 10, sides: 1, values: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, %Dicer.Tokens.End{value: ""}], 10.0}
+    assert Dicer.roll("10d1") == {:ok, [%Dicer.Tokens.Dice{quantity: 10, sides: 1, counted_values: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, %Dicer.Tokens.End{value: ""}], 10.0}
+  end
+
+  test "rolling fudge dice" do
+    {:ok, [result | tail], _total} = Dicer.roll("df")
+    assert result == -1 || 0 || 1
+    assert tail == [%Dicer.Tokens.End{}]
   end
 
   test "rolling one die, no quantity" do
-    assert Dicer.roll("d1") == {:ok, [%Dicer.Tokens.Dice{quantity: 1, sides: 1, values: [1]}, %Dicer.Tokens.End{value: ""}], 1.0}
+    assert Dicer.roll("d1") == {:ok, [%Dicer.Tokens.Dice{quantity: 1, sides: 1, counted_values: [1]}, %Dicer.Tokens.End{value: ""}], 1.0}
   end
 
   test "addition" do
@@ -68,6 +74,6 @@ defmodule DicerTest do
              %Dicer.Tokens.Multiply{function: &:erlang.*/2}, %Dicer.Tokens.Num{value: "3"}, %Dicer.Tokens.Plus{function: &:erlang.+/2}, %Dicer.Tokens.LeftParenthesis{value: "("}, %Dicer.Tokens.Num{value: "100"},
              %Dicer.Tokens.Divide{function: &:erlang.//2}, %Dicer.Tokens.LeftParenthesis{value: "("}, %Dicer.Tokens.Num{value: "20"}, %Dicer.Tokens.Multiply{function: &:erlang.*/2}, %Dicer.Tokens.Num{value: "5"},
              %Dicer.Tokens.RightParenthesis{value: ")"}, %Dicer.Tokens.RightParenthesis{value: ")"}, %Dicer.Tokens.Minus{function: &:erlang.-/2}, %Dicer.Tokens.Num{value: "575"}, %Dicer.Tokens.Plus{function: &:erlang.+/2},
-             %Dicer.Tokens.Dice{quantity: 10, sides: 1, values: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, %Dicer.Tokens.End{value: ""}], -89.0}
+             %Dicer.Tokens.Dice{quantity: 10, sides: 1, counted_values: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, %Dicer.Tokens.End{value: ""}], -89.0}
   end
 end
