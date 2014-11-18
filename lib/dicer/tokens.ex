@@ -53,9 +53,27 @@ defmodule Dicer.Tokens do
     end
   end
 
+  defmodule TakeTop do
+    @representation ~r/\A\^(\d+)/
+    defstruct take_num: 0
+
+    def get_regex() do
+      @representation
+    end
+  end
+
+  defmodule TakeBottom do
+    @representation ~r/\Av(\d+)/
+    defstruct take_num: 0
+
+    def get_regex() do
+      @representation
+    end
+  end
+
   defmodule Dice do
     @representation ~r/\A(\d*)[dD](\d+)/
-    defstruct quantity: 0, sides: 1, counted_values: [], rejected_values: []
+    defstruct quantity: 0, sides: 1, counted_values: [], rejected_values: [], raw_rolls: []
 
     def get_regex() do
       @representation
@@ -64,7 +82,7 @@ defmodule Dicer.Tokens do
 
   defmodule FudgeDice do
     @representation ~r/\A(\d*)[dD][fF]/
-    defstruct quantity: 0, counted_values: [], rejected_values: []
+    defstruct quantity: 0, counted_values: [], rejected_values: [], raw_rolls: []
 
     def get_regex() do
       @representation

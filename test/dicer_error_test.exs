@@ -63,6 +63,14 @@ defmodule DicerErrorTest do
     assert Dicer.roll("1-1/") == {:error, ["Trailing operator(s) on input!"]}
   end
 
+  test "trailing operator (^)" do
+    assert Dicer.roll("1-1/^") == {:error, ["Input has unrecognized characters!"]}
+  end
+
+  test "trailing operator (v)" do
+    assert Dicer.roll("1-1v") == {:error, ["Input has unrecognized characters!"]}
+  end
+
   # test "trailing operator (multiple)" do
   #   assert Dicer.roll("1-1-/+*") == {:error, ["Improper operator format (Ex. 1--1)!", "Trailing operator(s) on input!"]}
   # end

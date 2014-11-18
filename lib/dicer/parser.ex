@@ -2,6 +2,8 @@ defmodule Dicer.Parser do
   alias Dicer.Tokens
 
   def evaluate({:ok, input}) when is_list(input) do
+    IO.inspect input
+    
     case _expression(input) do
       {[%Tokens.End{}], result} ->
         {:ok, input, result}

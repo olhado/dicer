@@ -42,6 +42,15 @@ defmodule Dicer.Lexer do
       Regex.match?(Tokens.RightParenthesis.get_regex, input) ->
         {%Tokens.RightParenthesis{}, String.slice(input, 1..-1)}
 
+      Regex.match?(Tokens.RightParenthesis.get_regex, input) ->
+        {%Tokens.RightParenthesis{}, String.slice(input, 1..-1)}
+
+      Regex.match?(Tokens.TakeTop.get_regex, input) ->
+        _process_and_create_take_top_token(input)
+
+      Regex.match?(Tokens.TakeBottom.get_regex, input) ->
+        _process_and_create_take_bottom_token(input)
+
       Regex.match?(Tokens.Dice.get_regex, input) ->
         _process_and_create_dice_token(input)
 
@@ -56,6 +65,21 @@ defmodule Dicer.Lexer do
 
       true -> {:error, ["Input has unrecognized characters!"]}
     end
+  end
+
+  defp _process_and_create_take_top_token(input) do
+    [top_str, quantity] = Regex.run(Tokens.TakeTop.get_regex, input)
+    {q, _} = Integer.parse quantity
+    IO.puts q
+
+    {%Tokens.TakeTop{take_num: q }, String.slice(input, String.length(top_str)..-1)}
+  end
+
+  defp _process_and_create_take_bottom_token(input) do
+    [bottom_str, quantity] = Regex.run(Tokens.TakeBottom.get_regex, input)
+    {q, _} = Integer.parse quantity
+
+    {%Tokens.TakeBottom{take_num: q }, String.slice(input, String.length(bottom_str)..-1)}
   end
 
   defp _process_and_create_dice_token(input) do
