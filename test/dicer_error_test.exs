@@ -91,6 +91,12 @@ defmodule DicerErrorTest do
     assert Dicer.roll("/1") == {:error, ["Invalid operator(s) at beginning of input!"]}
   end
 
+  test "improper take" do
+    assert Dicer.roll("33v2") == {:error, ["Unexpected error in parser!"]}
+  end
+
+
+
   # test "multiple validation errors" do
   #   assert Dicer.roll("1+/*-1-+") == {:error, ["Improper operator format (Ex. 1--1)!", "Trailing operator(s) on input!"]}
   # end

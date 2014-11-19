@@ -2,7 +2,6 @@ defmodule Dicer.Parser do
   alias Dicer.Tokens
 
   def evaluate({:ok, input}) when is_list(input) do
-    IO.inspect input
     
     case _expression(input) do
       {[%Tokens.End{}], result} ->
@@ -35,7 +34,7 @@ defmodule Dicer.Parser do
 
   ### TODO: Jose sez guard is ugly until Erlang (and thus Elixir) support accessing map fields in guards
   ### (https://groups.google.com/d/msg/elixir-lang-talk/rprxcoQERbA/La08lNry81AJ)
-  defp _apply_expression([head = %{__struct__: var} | tail], acc) when var in [Tokens.Plus] or var in [Tokens.Minus] do
+  defp _apply_expression([head = %{__struct__: var} | tail], acc) when var in [Tokens.Plus, Tokens.Minus] do
     case _factor(tail) do
       {:error, message} -> {:error, message}
 
@@ -58,7 +57,7 @@ defmodule Dicer.Parser do
 
   ### TODO: Jose sez guard is ugly until Erlang (and thus Elixir) support accessing map fields in guards
   ### (https://groups.google.com/d/msg/elixir-lang-talk/rprxcoQERbA/La08lNry81AJ)
-  defp _apply_factor([head = %{__struct__: var} | tail], acc) when var in [Tokens.Multiply] or var in [Tokens.Divide] do
+  defp _apply_factor([head = %{__struct__: var} | tail], acc) when var in [Tokens.Multiply, Tokens.Divide] do
     case _number_or_dice(tail) do
       {:error, message} -> {:error, message}
 
@@ -99,12 +98,28 @@ defmodule Dicer.Parser do
 
   defp _number_or_dice(input = [%Tokens.Dice{} | tail]) do
     dice_rolls = hd(input)
-    {tail, Enum.sum(dice_rolls.counted_values)}
+
+    %{__struct__: type} = hd(tail)
+
+    cond do
+      type in [Tokens.TakeTop, Tokens.TakeBottom] ->
+        {tl(tail), Enum.sum(dice_rolls.counted_values)}
+      true ->
+        {tail, Enum.sum(dice_rolls.counted_values)}
+    end
   end
 
   defp _number_or_dice(input = [%Tokens.FudgeDice{} | tail]) do
     dice_rolls = hd(input)
-    {tail, Enum.sum(dice_rolls.counted_values)}
+
+    %{__struct__: type} = hd(tail)
+
+    cond do
+      type in [Tokens.TakeTop, Tokens.TakeBottom] ->
+        {tl(tail), Enum.sum(dice_rolls.counted_values)}
+      true ->
+        {tail, Enum.sum(dice_rolls.counted_values)}
+    end
   end
 
   defp _number_or_dice(input = [%Tokens.Num{} | tail]) do

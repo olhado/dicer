@@ -32,7 +32,7 @@ defmodule DicerTest do
   end
 
   test "rolling dice, take top 2" do
-    {:ok,  [%Dicer.Tokens.Dice{quantity: 4, sides: 6, counted_values: c_values, rejected_values: r_values, raw_rolls: _ }, %Dicer.Tokens.TakeTop{}, %Dicer.Tokens.End{value: ""}], _ } = Dicer.roll("4d6^2")
+    {:ok,  [%Dicer.Tokens.Dice{quantity: 4, sides: 6, counted_values: c_values, rejected_values: r_values, raw_rolls: _ }, %Dicer.Tokens.TakeTop{take_num: 2}, %Dicer.Tokens.End{value: ""}], _ } = Dicer.roll("4d6^2")
     assert length(c_values) == 2
     assert length(r_values) == 2
 
@@ -40,7 +40,7 @@ defmodule DicerTest do
   end
 
   test "rolling dice, take bottom 2" do
-    {:ok,  [%Dicer.Tokens.Dice{quantity: 4, sides: 6, counted_values: c_values, rejected_values: r_values}, %Dicer.Tokens.End{value: ""}], _ } = Dicer.roll("4d6v2")
+    {:ok,  [%Dicer.Tokens.Dice{quantity: 4, sides: 6, counted_values: c_values, rejected_values: r_values}, %Dicer.Tokens.TakeBottom{take_num: 2}, %Dicer.Tokens.End{value: ""}], _ } = Dicer.roll("4d6v2")
     assert length(c_values) == 2
     assert length(r_values) == 2
 
