@@ -32,7 +32,8 @@ defmodule Dicer.Mixfile do
   #
   # Type `mix help deps` for more examples and options
   defp deps do
-    [{:sfmt, "~> 0.10.1"}]
+    [{:sfmt, "~> 0.10.1"},
+      {:ex_doc, "~> 0.6", only: :dev}]
   end
 
   defp description do
