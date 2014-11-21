@@ -31,10 +31,36 @@ From here, execute rolls like this:
 
 `iex(1)> Dicer.roll "1+2+3"`
 
+Adding as a mix dependency
+--------------------------
+
+In your mix.exs file:
+
+```
+  def application do
+    [mod: {MyApp, []},
+     applications: [:dicer]]
+  end
+```
+
+and this:
+
+```
+  defp deps do
+    [{:dicer, "0.4.0"}]
+  end
+```
+
 Details
 =======
 
-Dicer is an elixir application that lets you evaluate dice rolls with simple arithmetic operators. the operators supported are `+, -, /, *`, grouping via parentheses, and designating dice via `<quantity>d<sides>` format (Ex. 20d8 or D100).
+Dicer is an elixir application that lets you evaluate dice rolls with simple arithmetic operators. 
+
+* The operators supported are `+, -, /, *`.
+* Grouping is via parentheses
+* Polyhedral dice are designated using the `<quantity>d<sides>` format (Ex. 20d8 or D100).
+* Fudge/Fate dice are designated using the `<quantity>dF` format (Ex. 42dF)
+* You can ask Dicer to take the top or bottom X rolls via the `^<quantity>` (take top) and `v<quantity>` (take bottom) symbols (Ex. 10d100^5 [take top 5 results from 10 rolls of a 100-sided die])
 
 Why?
 ====
