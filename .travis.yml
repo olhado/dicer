@@ -8,4 +8,4 @@ before_script:
   - export PATH=`pwd`/elixir/bin:$PATH
   - mix local.hex --force
   - mix deps.get --only test
-script: "MIX_ENV=test mix test && mix escript.build"
+script: "export MIX_ENV=test && mix test && mix escript.build"
