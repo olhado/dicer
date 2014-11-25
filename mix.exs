@@ -3,7 +3,7 @@ defmodule Dicer.Mixfile do
 
   def project do
     [app: :dicer,
-     version: "0.5.0",
+     version: "0.6.0",
      elixir: "~> 1.0.0",
      deps: deps,
      escript: escript,
