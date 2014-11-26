@@ -15,7 +15,7 @@ defmodule Dicer.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [:logger]]
+    [applications: [:sfmt, :logger]]
   end
 
   def escript do
