@@ -70,7 +70,6 @@ defmodule Dicer.Lexer do
   defp _process_and_create_take_top_token(input) do
     [top_str, quantity] = Regex.run(Tokens.TakeTop.get_regex, input)
     {q, _} = Integer.parse quantity
-    IO.puts q
 
     {%Tokens.TakeTop{take_num: q }, String.slice(input, String.length(top_str)..-1)}
   end
