@@ -31,8 +31,22 @@ defmodule DicerTest do
     assert tail == [%Dicer.Tokens.End{}]
   end
 
+  test "max dice" do
+    {status, _input, _total} = Dicer.roll("1000000d6")
+    assert status == :ok
+    {status, _input, _total} = Dicer.roll("500000d6 + 500000d6")
+    assert status == :ok
+  end
+
+  test "max dice sides" do
+    {status, _input, _total} = Dicer.roll("6d1000000")
+    assert status == :ok
+    {status, _input, _total} = Dicer.roll("6d500000 + 6d500000")
+    assert status == :ok
+  end
+
   test "rolling dice, take top 2" do
-    {:ok,  [%Dicer.Tokens.Dice{quantity: 4, sides: 6, counted_values: c_values, rejected_values: r_values, raw_rolls: _ }, %Dicer.Tokens.TakeTop{take_num: 2}, %Dicer.Tokens.End{value: ""}], _ } = Dicer.roll("4d6^2")
+    {:ok, [%Dicer.Tokens.Dice{quantity: 4, sides: 6, counted_values: c_values, rejected_values: r_values, raw_rolls: _ }, %Dicer.Tokens.TakeTop{take_num: 2}, %Dicer.Tokens.End{value: ""}], _} = Dicer.roll("4d6^2")
     assert length(c_values) == 2
     assert length(r_values) == 2
 
