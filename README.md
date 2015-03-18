@@ -1,3 +1,7 @@
+# NOW DEPRECATED!
+
+Dicer is still available on hex.pm, but will not be worked on anymore. Check out my new replacement project [at gitlab.com named Rollex](https://gitlab.com/olhado/rollex). 
+
 Dicer
 =====
 
