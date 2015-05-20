@@ -8,7 +8,9 @@ defmodule Dicer.Mixfile do
      deps: deps,
      escript: escript,
      description: description,
-     package: package]
+     package: package,
+     build_embedded: Mix.env == :prod,
+     start_permanent: Mix.env == :prod]
   end
 
   # Configuration for the OTP application
